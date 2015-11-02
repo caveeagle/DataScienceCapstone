@@ -13,15 +13,6 @@ rdata <- readRDS( file = "min_review.rds" )
 #################################################
 #################################################
 
-udata$N <- 1:nrow(udata) 
-
-bdata$N <- 1:nrow(bdata) 
-
-rdata$N <- 1:nrow(rdata) 
-
-#################################################
-#################################################
-
 library('Matrix')
 
 sparse <- Matrix(0, nrow = nrow(udata), ncol = nrow(bdata), sparse = TRUE)
@@ -47,37 +38,35 @@ for (rI in 1:nrow(rdata))
   {
     if( rdata[rI,"business_id"] ==  bdata[bI,"business_id"] )
     {
-      bus_num <- bdata[bI,"N"]
-      break
+      bus_num <- bdata[bI,"N"];
+      break;
     }
   }
 
   if(user_num==0)
   {
-    #message("ERROR IN REVIEW (USER NOT FIND): ",rdata[rI,"N"])
-    break
-  }
+    message("ERROR IN REVIEW (USER NOT FIND): ",rdata[rI,"N"])
+    next;
+  };
   if(bus_num==0)
   {
-    #message("ERROR IN REVIEW (BUSINESS NOT FIND): ",rdata[rI,"N"])
-    break
-  }
+    message("ERROR IN REVIEW (BUSINESS NOT FIND): ",rdata[rI,"N"])
+    next;
+  };
   
-  conut += 1
+  count = count+1;
   
-  if( (count%1000) == 0 )
+  if( (count%%1000) == 0 )
   {
-    print(count%1000)
+    print(count%%1000)
   }
   
-  print(user_num)
-  print(bus_num)
-  
-  # sparse[user_num,bus_num] = rdata[rI,"stars"]
+  sparse[user_num,bus_num] = rdata[rI,"stars"]
   
   if(count>10000) break; # for debug
   
 }
+
 
 #################################################
 #################################################
@@ -88,7 +77,7 @@ for (rI in 1:nrow(rdata))
 ###############################################################################
 ###############################################################################
 
-file_sparse_rds = "D:\\!Data Science\\Capstone\\objects\\sparse.rds"
+file_sparse_rds = "D:\\!Data Science\\Capstone\\objects\\min_sparse.rds"
 
 saveRDS(sparse, file = file_sparse_rds )
 
