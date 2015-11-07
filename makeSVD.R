@@ -8,16 +8,25 @@ library('irlba')
 
 setwd("D:\\!Data Science\\Capstone\\objects")
 
-sparse <- readRDS( file = "min_sparse.rds" )
+sparse <- readRDS( file = "sparse_matrix_object.rds" )
  
 #################################################
 #################################################
 
-X <- irlba(sparse)
+X <- irlba(sparse, verbose = TRUE)
 
-R <- X$u %*% t(X$v) 
+# saveRDS(X, file = "svd_object.rds" )
+
+#R <- X$u %*% t(X$v) 
 
 # crossprod(X$u,X$v)
+
+#################################################
+#################################################
+
+
+
+
 
 
 
