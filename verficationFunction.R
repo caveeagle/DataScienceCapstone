@@ -1,5 +1,5 @@
 
-#### GENERAL PART
+############# GENERAL PART #####################
 
 setwd("D:\\!Data Science\\Capstone\\objects")
 
@@ -16,13 +16,15 @@ X <- readRDS( file = "svd_object.rds" )
 #################################################
 #################################################
 
+############# MAIN FUNCTION #####################
+
 makeCategories <- function(n) {
 
 #### ONE USER (PART 1)
 
-user_num = n
+user_num <- n
 
-user_uid = udata[user_num,2] 
+user_uid <- udata[user_num,2] 
 
 ### MAKE sm_cats
 
@@ -46,7 +48,7 @@ R <- cbind(R,c(1:61184))
 R <- as.data.frame(R)
 R <- R[order(-R$V1),]
 
-user_maxcat = nrow(bdata_find) # Number of recomendation categories
+user_maxcat <- nrow(bdata_find) # Number of recomendation categories
 
 Rsub <- R[ 1:user_maxcat,]
 
@@ -64,7 +66,7 @@ row.names(sm_cats_R)<-NULL
 
 ### RETURN matrix
 
-res = nrow(sm_cats) - nrow(sm_cats_R)
+res <- nrow(sm_cats) - nrow(sm_cats_R)
 
 if(res>0)
 {
@@ -81,7 +83,7 @@ if(res<0)
   sm_cats <- rbind(sm_cats,fill)
 }
 
-CATEGORIES = cbind(sm_cats,sm_cats_R)
+CATEGORIES <- cbind(sm_cats,sm_cats_R)
 colnames(CATEGORIES) <- c("known_categories","known_nums","recommend_categories","recommend_nums")
 
 return( CATEGORIES )
@@ -92,9 +94,23 @@ return( CATEGORIES )
 #################################################
 #################################################
 
-CAT <- makeCategories(2809)
+################   MAIN CYCLE ###################
 
+USERS_LIST <- c(2809,3631)
 
+CATEGORIES_LIST = list()
+
+for(n in USERS_LIST)
+{
+  CATEGORIES_LIST[[length(CATEGORIES_LIST)+1]] <- makeCategories(n)
+}
+
+#################################################
+#################################################
+#################################################
+#################################################
+
+#CAT <- CATEGORIES_LIST[[1]]
 
 
 
