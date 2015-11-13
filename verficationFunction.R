@@ -16,13 +16,13 @@ X <- readRDS( file = "svd_object.rds" )
 #################################################
 #################################################
 
+makeCategories <- function(n) {
+
 #### ONE USER (PART 1)
 
-user_num = 2809
+user_num = n
 
-user_uid = udata[user_num,2] ????
-
-user_maxcat = 100 # Number of recomendation categories
+user_uid = udata[user_num,2] 
 
 ### MAKE sm_cats
 
@@ -33,8 +33,9 @@ sm_cats <- as.data.frame(summary(as.factor(cats)))
 colnames(sm_cats) <- c("nums")
 sm_cats <- cbind(cats = rownames(sm_cats), sm_cats)
 sm_cats <- sm_cats[order(-sm_cats$nums),]
+row.names(sm_cats)<-NULL
 
-### CALC RECOMENDATION
+### CALC RECOMENDATION (PART 2)
 
 uN <- X$u[user_num,] 
 
@@ -44,6 +45,8 @@ R <- matrix(RN,ncol = 1)
 R <- cbind(R,c(1:61184))
 R <- as.data.frame(R)
 R <- R[order(-R$V1),]
+
+user_maxcat = nrow(bdata_find) # Number of recomendation categories
 
 Rsub <- R[ 1:user_maxcat,]
 
@@ -56,18 +59,40 @@ cats_R <- unlist(bdata_find_R$categories)
 sm_cats_R <- as.data.frame(summary(as.factor(cats_R)))
 colnames(sm_cats_R) <- c("nums_recommend")
 sm_cats_R <- cbind(cats_R = rownames(sm_cats_R), sm_cats_R)
+sm_cats_R <- sm_cats_R[order(-sm_cats_R$nums_recommend),]
+row.names(sm_cats_R)<-NULL
 
 ### RETURN matrix
 
+res = nrow(sm_cats) - nrow(sm_cats_R)
+
+if(res>0)
+{
+  fill <- matrix(c("",0),nrow=res,ncol=2,byrow=TRUE)
+  colnames(fill) <- c("cats_R","nums_recommend")
+  sm_cats_R <- rbind(sm_cats_R,fill)
+}
+
+if(res<0)
+{
+  res = -res
+  fill <- matrix(c("",0),nrow=res,ncol=2,byrow=TRUE)
+  colnames(fill) <- c("cats","nums")
+  sm_cats <- rbind(sm_cats,fill)
+}
+
 CATEGORIES = cbind(sm_cats,sm_cats_R)
+colnames(CATEGORIES) <- c("known_categories","known_nums","recommend_categories","recommend_nums")
 
+return( CATEGORIES )
+}
 
 #################################################
 #################################################
 #################################################
 #################################################
 
-
+CAT <- makeCategories(2809)
 
 
 
