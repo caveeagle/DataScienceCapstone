@@ -94,9 +94,15 @@ return( CATEGORIES )
 #################################################
 #################################################
 
+############ MAKE USERS LIST ####################
+
+udata <- udata[order(-udata$review_count),]
+
+USERS_LIST <- udata[1:1000,1]
+
 ################   MAIN CYCLE ###################
 
-USERS_LIST <- c(2809,3631)
+#USERS_LIST <- c(2809,3631)
 
 CATEGORIES_LIST = list()
 
@@ -104,6 +110,8 @@ for(n in USERS_LIST)
 {
   CATEGORIES_LIST[[length(CATEGORIES_LIST)+1]] <- makeCategories(n)
 }
+
+saveRDS(CATEGORIES_LIST, file = "check_categories_list.rds" )
 
 #################################################
 #################################################
